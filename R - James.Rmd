@@ -1,0 +1,179 @@
+---
+title: "CSC 360 Assignment 1 Instructions"
+author: "Harold Nelson"
+date: "January 31, 2017"
+output: word_document
+---
+
+This assignment is an analysis of weather in Olympia, Washington. It uses daily data from July 1, 1877 to the middle of July 2017. The purpose.  You need to use appropriate ggplot2 and dplyr instructions to answer the questions below.
+## Load the required libraries.
+
+```{r}
+library(tidyverse)
+```
+
+
+## Problem 1
+The first step is to load the data. The load command in the following chunk works on my computer, but you will have to modify it.  Of course before you can do this you need to download the data from the course onto your computer. After that, you can bring it into RStudio with the following steps.
+
+1. Click on "File"
+2. Click on "Open File"
+3. Navigate to the file and double-click it.
+4. Say yes.
+5. Copy the command that this process placed in your console.
+6. Paste this on top of the command from my system. Leave this command in your first chunk so that it runs everytime you knit.
+
+Run the commands glimpse() and summary() on your file to verify that your import was successful.
+
+```{r}
+
+# The load command below must be run every time you run knitr.
+
+load("C:/Users/MSSA/Downloads/olywthr.rdata")
+
+
+ glimpse(olywthr)
+ summary(olywthr)
+
+```
+
+Be careful to keep the R code you need within chunks. Always include the R code and output needed to answer the questions.
+
+
+
+## Problem 2
+Let's create a small dataframe to work with containing only data from the years 2014 through 2016. Call this dataframe 'recent'.  Use the filter() command from dplyr to do this. Run the summary() command to verify that your use of filter() worked correctly.  Cite two specific results in the output to support your belief that recent is what you wanted.
+
+```{r}
+
+recent <- olywthr %>%
+     filter(yr>= 2014 & yr<=2016)
+summary(recent)
+print(recent)
+
+
+
+```
+
+## Problem  3
+Provide the basic descriptive statistics and a histogram for maximum daily temperature (TMAX) in recent. You can use summary() but you need to add the interquartile range and the standard deviation. Is this distribution symmetric?  Make two correct statements about TMAX. Use ggplot2 commands to produce the graphics.
+
+```{r}
+
+
+summary(recent$TMAX)
+sd(recent$TMAX)
+IQR(recent$TMAX)
+ggplot(recent, aes(TMAX)) + geom_histogram(binwidth=0.5)
+
+
+
+```
+
+
+
+
+
+
+## Problem 5
+Applying filter to recent, Create a smaller dataframe (sepoct) containing only observations from the months of September and October. Use summary() to verify your results and cite two  items in the output which are consistent with success. Use tapply() with summary() to compare the TMAX values from these two months.  Produce a side-by-side boxplot.  Make two correct statements to describe your results.
+
+```{r}
+
+sepoct <- filter(recent, mo == 9:10)
+summary(sepoct)
+tapply(sepoct$TMAX, sepoct$mo, summary)
+boxplot(sepoct$TMAX~sepoct$mo)
+
+
+```
+
+## Problem 6
+Use tapply() with summary() to compare the TMAX values from these two months.  Produce a side-by-side boxplot.  Make two correct statements to describe your results.
+
+```{r}
+
+sepoct <- filter(recent, mo == 9:10)
+summary(sepoct)
+tapply(sepoct$TMAX, sepoct$mo, summary)
+boxplot(sepoct$TMAX~sepoct$mo)
+
+
+
+```
+
+
+## Problem 7
+Create a new boolean variable QRain in the dataframe sepoct.  If PRCP is greater than 0, the variable should be set to TRUE. Otherwise it should be set to FALSE. Produce a table and a barplot of QRain. Use ggplot2 to create the graphic.
+
+
+```{r}
+
+
+sepoct$QRain <- ifelse( sepoct$PRCP > 0,"TRUE","FALSE")
+print(sepoct$QRain)
+table(sepoct$QRain)
+ggplot(sepoct, aes(QRain)) + geom_bar()
+
+
+```
+
+
+
+## Problem 8
+Produce a table and a mosaicplot to describe the relationship between the variables QRain and mo in the dataframe sepoct. Describe what you see.
+
+```{r}
+
+
+table(sepoct$QRain, sepoct$mo)
+t <- table(sepoct$mo, sepoct$QRain)
+mosaicplot(t)
+
+```
+
+
+
+
+## Problem 7
+Produce a scatterplot to describe the relationship between TMAX and TMIN using the data in recent.
+Compute the correlation coefficient.
+Describe the meaning of the the correlation coefficient.  Does it agree with the visual results in the plot?
+
+```{r}
+plot(recent$TMAX, recent$TMIN)
+cor(recent$TMAX, recent$TMIN)
+
+
+
+
+```
+
+
+
+## Problem 8
+Produce a linear model using the dataframe recent which could be used to predict the value of TMIN from a given value of TMAX.  
+
+Display the summary results of the linear model.
+
+Use the results of the model to predict the value of TMIN if the value of TMAX is 106. Show the R code you used to make this prediction.
+
+
+```{r}
+
+Sally <- lm(recent$TMIN~recent$TMAX)
+summary(Sally)
+plot(recent$TMIN~recent$TMAX)
+abline(Sally)
+b = 13.60479
+m = 0.45192
+TMAX = 106
+TMIN = m*TMAX + b
+print(TMIN)
+
+
+```
+
+
+
+
