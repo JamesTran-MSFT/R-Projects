@@ -1,0 +1,62 @@
+---
+title: "A3"
+author: "James Tran"
+date: "3/27/2018"
+output:
+  word_document: default
+---
+
+# Assignment A3
+The purpose of this assignment is to look at the categorical determinants of the value of a diamond based on the diamonds dataframe in the package ggplot2.
+
+
+## Problem 1
+First, load the libraries you need .Create a 10% random sample of the original dataframe, called lild. In this dataframe, create the variable price per carat (ppc).  Keep only the variables, price, carat, ppc, cut color and clarity. Hopefully, by thinking of ppc as our target variable, the influence of carat has been removed.
+
+Do a glimpse and a summary of lild to make sure everything has gone well.
+
+```{r}
+library(tidyverse)
+diamonds %>%
+   sample_frac(size=.1) %>% 
+   mutate(ppc = price/carat) %>% 
+   select(price, carat, ppc, cut, 
+   color,clarity) ->
+   lild
+glimpse(lild)
+summary(lild)
+```
+
+## Problem 2
+
+Now make an initial attempt at a visualization of how the three categorical variables influence ppc.  Use facet_grid to incorporate two of the three categorical variables. Map the third categorical variable to the horizontal axis of the cells in the grid.  Choose the first of the two methods we demonstrated in class (geom_boxplor() ) to show the relationship of the third categorical variable to the target ppc.
+
+```{r}
+lild %>% ggplot(aes(x=cut,y=ppc)) + geom_boxplot() +
+  facet_grid(color~clarity)
+```
+
+## Problem 3
+
+Basically repeat Problem 2, but change the type of grahic in each of the cells of the grid to use the second method we demonstrated in class (geom_jitter() ). Choose a reasonable value of alpha.
+```{r}
+lild %>% ggplot(aes(x=cut,y=ppc)) + geom_jitter(alpha=.2) +
+  facet_grid(color~clarity)
+```
+
+## Problem 4
+
+Basically repeat Problem 3, but make a different choice on the roles of the three categorical variables.
+
+```{r}
+lild %>% ggplot(aes(x=cut,y=ppc)) + 
+  geom_jitter(alpha=.2) +
+  facet_grid(color~clarity)
+```
+
+
+## Problem 5
+
+Compare what you see in these graphics. 
+The main thing that I see within these graphics is that the the Ideal cut is one of the most expensive carats. Also There is more data related to the Very good, Premium, and Ideal cut's over the Good and Fair.
+
